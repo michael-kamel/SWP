@@ -77,7 +77,7 @@ module.exports = (function ()
             throw new Error(`Unregistered module ${modName}`) 
         }
         let mod = modulesMeta[modName]
-        let deps = util._.clone(mod.dependencies).map(dep => depsMap[dep.name] || dep)
+        let deps = util._.clone(mod.dependencies).map(dep => depsMap[dep] || dep)
         return inject(mod.constructor, {context:context || mod.constructor, deps})()
     }
     function loadAll () 

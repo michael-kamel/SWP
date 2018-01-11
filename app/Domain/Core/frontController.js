@@ -39,7 +39,7 @@ ioc.registerModule('frontController', function(logger, dbMethods, appValidationS
     {
         res.status(401).json({success:false})
     }
-    async function getAllPosts(res, res, next)
+    async function getAllPosts(req, res, next)
     {
         try
         {
