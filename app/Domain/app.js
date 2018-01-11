@@ -8,6 +8,7 @@ module.exports = function (app)
         app.get('/auth/fail', frontController.authFail)
         app.post('/publishpost', frontController.publishPost)
         app.delete('/deletePost', frontController.deletePost)
+        app.get('/getallposts', frontController.getAllPosts)
         app.use(expressErrorHandler.manage)
     })()
 }

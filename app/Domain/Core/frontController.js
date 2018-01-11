@@ -39,6 +39,18 @@ ioc.registerModule('frontController', function(logger, dbMethods, appValidationS
     {
         res.status(401).json({success:false})
     }
+    async function getAllPosts(res, res, next)
+    {
+        try
+        {
+            let posts = await dbMethods.getAllPosts()
+            res.status(200).json({success:true, posts})
+        }
+        catch(err)
+        {
+            next(err)
+        }
+    }
 
     function tokenizeUser(id)
     {
@@ -52,6 +64,7 @@ ioc.registerModule('frontController', function(logger, dbMethods, appValidationS
         fbReturn,
         publishPost,
         deletePost,
-        authFail
+        authFail,
+        getAllPosts
     }
 })

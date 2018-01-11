@@ -31,12 +31,33 @@ ioc.registerModule('dbMethods', function(dbService, logger)
         await newUser.saveAsync()
         return newUser
     }
+    async function getAllPosts()
+    {
+        let posts = []
+        return new Promise(async function(resolve, reject) 
+        {
+            await dbService.instance.Post.stream({}, {raw: true}, function(reader)
+            {
+                while (row = reader.readRow()) 
+                {
+                    posts.push(row)
+                }
+            }, function(err)
+            {
+                if(err)
+                    reject(err)
+                else
+                    resolve(posts)
+            })
+        })
+    }
 
     return {
         addPost,
         deletePost,
         findUserByFacebookId,
         findUserById,
-        createUser
+        createUser,
+        getAllPosts
     }
 })
