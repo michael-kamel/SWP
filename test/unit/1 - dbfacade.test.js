@@ -32,7 +32,12 @@ describe('DB Facade tests', () =>
                 posts.push(this)
                 return
             }
+            function uuid()
+            {
+                return "8e847158-de32-41cd-8296-c9662ecdcaf2"
+            }
             return {
+                uuid,
                 clearDb,
                 uuidFromString,
                 posts,

@@ -10,9 +10,10 @@ ioc.registerModule('frontController', function(logger, dbMethods, appValidationS
         try
         {
             await joi.validate(req, appValidationSchemas.PUBLISH_POST, {allowUnknown:true})
-            let user = authorizeUser(req.headers.authorization)
-            req.userId = user.id
-            let post = await dbMethods.addPost({userId:req.userId, title:req.body.title, content:req.body.content})
+            req.user = await authorizeUser(req.headers.authorization)
+            if(!req.user)
+                return res.status(401).json({success:false})
+            let post = await dbMethods.addPost({userId:req.user.id, title:req.body.title, content:req.body.content})
             res.status(200).json({success:true, post})
         }
         catch(err)
@@ -25,9 +26,10 @@ ioc.registerModule('frontController', function(logger, dbMethods, appValidationS
         try
         {
             await joi.validate(req, appValidationSchemas.REMOVE_POST, {allowUnknown:true})
-            let user = authorizeUser(req.headers.authorization)
-            req.userId = user.id
-            await dbMethods.deletePost({userId:req.userId, postId:req.body.postId})
+            req.user = await authorizeUser(req.headers.authorization)
+            if(!req.user)
+                return res.status(401).json({success:false})
+            await dbMethods.deletePost({userId:req.user.id, postId:req.body.postId})
             res.status(200).json({success:true})
         }
         catch(err)
@@ -56,9 +58,10 @@ ioc.registerModule('frontController', function(logger, dbMethods, appValidationS
     {
         return jwt.sign({id}, process.env.JWT_SECRET)
     }
-    function authorizeUser(token)
+    async function authorizeUser(authtoken)
     {
-         return jwt.verify(token, process.env.JWT_SECRET)
+         let token = jwt.verify(authtoken, process.env.JWT_SECRET)
+         return dbMethods.findUserById({id:token.id})
     }
     return {
         fbReturn,

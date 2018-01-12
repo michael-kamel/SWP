@@ -4,7 +4,8 @@ ioc.registerModule('dbMethods', function(dbService, logger)
     {
         let post = new dbService.instance.Post(
         {
-            userId:dbService.uuidFromString(userId),
+            postId:dbService.uuid(),
+            userId:userId,
             postTitle: title,
             postContent: content
         })
@@ -13,7 +14,7 @@ ioc.registerModule('dbMethods', function(dbService, logger)
     }
     async function deletePost({userId, postId})
     {
-        await dbService.instance.Post.deleteAsync({userId:dbService.uuidFromString(userId), postId:dbService.uuidFromString(postId)})
+        await dbService.instance.Post.deleteAsync({userId, postId:dbService.uuidFromString(postId)})
     }
     async function findUserByFacebookId({id})
     {
@@ -22,12 +23,12 @@ ioc.registerModule('dbMethods', function(dbService, logger)
     }
     async function findUserById({id})
     {
-        let user = await dbService.instance.User.findOneAsync({id})
+        let user = await dbService.instance.User.findOneAsync({id: dbService.uuidFromString(id)})
         return user
     }
     async function createUser({name, email, facebookId, facebookToken})
     {
-        let newUser = new dbService.instance.User({name, email, facebookId, facebookToken})
+        let newUser = new dbService.instance.User({uuid:dbService.uuid(), name, email, facebookId, facebookToken})
         await newUser.saveAsync()
         return newUser
     }

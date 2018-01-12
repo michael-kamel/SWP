@@ -35,14 +35,13 @@ ioc.registerModule('authenticator', function(logger, dbMethods)
                 return done(null, user)
             else 
             {
-                await dbMethods.createUser(
+                let createdUser = await dbMethods.createUser(
                 {
                     name: profile.name.givenName + ' ' + profile.name.familyName,
                     email: profile.emails[0].value,
                     facebookId: profile.id,
                     facebookToken: token
                 })
-                let createdUser = await dbMethods.findUserByFacebookId({id:profile.id})
                 done(null, createdUser)
             }
         }
